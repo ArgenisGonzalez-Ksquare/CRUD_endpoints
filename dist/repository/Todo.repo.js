@@ -1,0 +1,82 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteTodo = exports.updateTodo = exports.getTodo = exports.createTodo = void 0;
+const Todo_model_1 = require("../models/Todo.model");
+// Create operation
+const createTodo = (description) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const newTodo = yield Todo_model_1.Todo.create({
+            description
+        });
+        return newTodo.id;
+    }
+    catch (error) {
+        console.error(error);
+    }
+});
+exports.createTodo = createTodo;
+const getTodo = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const filterId = yield Todo_model_1.Todo.findByPk(id);
+        if (!filterId) {
+            return 'The ID not found';
+        }
+        let status = 'Complete';
+        if (filterId.is_completed === false) {
+            status = 'Imcomplete';
+        }
+        return ({
+            "id": filterId.id,
+            "desciption:": filterId.description,
+            "status": status
+        });
+    }
+    catch (error) {
+        console.error(error);
+    }
+});
+exports.getTodo = getTodo;
+const updateTodo = (id, newDecription, newIs_completed) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const filterId = yield Todo_model_1.Todo.findByPk(id);
+        if (!filterId) {
+            return 'The ID not found';
+        }
+        const updateTodo = yield Todo_model_1.Todo.update({
+            id: filterId.id,
+            description: newDecription,
+            is_completed: newIs_completed
+        }, {
+            where: { id: filterId.id }
+        });
+        return 'DONE';
+    }
+    catch (error) {
+        console.error(error);
+    }
+});
+exports.updateTodo = updateTodo;
+const deleteTodo = (newId) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (!newId) {
+            return 'The ID not found';
+        }
+        const deleteTodo = yield Todo_model_1.Todo.destroy({
+            where: { id: newId }
+        });
+        return 'done';
+    }
+    catch (error) {
+        console.error(error);
+    }
+});
+exports.deleteTodo = deleteTodo;
